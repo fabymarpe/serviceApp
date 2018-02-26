@@ -36,23 +36,18 @@ export function configureFakeBackend() {
 
                     let addressOne = params.addressOne.replace(/ /g,'+');
                     let addressTwo = params.addressTwo.replace(/ /g,'+');
+
+                    let proxyUrl = 'https://cors-anywhere.herokuapp.com/';
                     let url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins=' + addressOne +
                         '&destinations=' + addressTwo + '&mode=car&language=es&key=AIzaSyBaIzYVIXY4sdU0AbVSAYnRX0slnlOnHI4';
 
-                    const requestOptions = {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' }
-                    };
-
-                    return fetch(url, requestOptions)
+                    return fetch(proxyUrl + url)
                         .then(response => {
                             if (!response.ok) {
                                 reject(response.statusText);
                             }
                             resolve({ ok: true, json: () => response.json() });
                         });
-
-                    return;
                 }
 
                 // pass through any requests not handled above

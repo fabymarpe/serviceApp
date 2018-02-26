@@ -12,7 +12,7 @@ class ServicePage extends React.Component {
             descriptionService: '',
             addressOne: '',
             addressTwo: '',
-            submitted: false
+            submitted: false,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -26,6 +26,7 @@ class ServicePage extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
+
         this.setState({submitted: true});
         const {descriptionService, addressOne, addressTwo} = this.state;
         const {dispatch} = this.props;
@@ -67,9 +68,20 @@ class ServicePage extends React.Component {
                     </div>
                 </form>
                 <div>
-                    <label htmlFor="password">Tiempo estimado:</label> { service.duration }
-                    <br/>
-                    <label htmlFor="password">Distancia:</label> { service.distance }
+                    <div>
+                        {submitted && !service.duration && !service.distance &&
+                        <div className="help-block">Calculando la duración y distancia...</div>
+                        }
+                    </div>
+                    <div>
+                        {submitted && service.duration && service.distance &&
+                        <div>
+                            <label htmlFor="password">Tiempo estimado:</label> { service.duration }
+                            <br/>
+                            <label htmlFor="password">Distancia:</label> { service.distance }
+                        </div>
+                        }
+                    </div>
                 </div>
                 <p>
                     <Link to="/login"> <button className="btn btn-primary">Logout</button></Link>

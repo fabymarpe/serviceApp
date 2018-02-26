@@ -1,5 +1,4 @@
-// array in local storage for registered users
-let users = JSON.parse(localStorage.getItem('users')) || [];
+import { axios } from 'axios';
     
 export function configureFakeBackend() {
     let realFetch = window.fetch;
@@ -13,109 +12,45 @@ export function configureFakeBackend() {
                     // get parameters from post request
                     let params = JSON.parse(opts.body);
 
-                    // find if any user matches login credentials
-                    let filteredUsers = users.filter(user => {
-                        return user.username === params.username && user.password === params.password;
-                    });
-
-                    if (filteredUsers.length) {
+                    if ('admin' === params.username && 'admin123'=== params.password) {
                         // if login details are valid return user details and fake jwt token
-                        let user = filteredUsers[0];
                         let responseJson = {
-                            id: user.id,
-                            username: user.username,
-                            firstName: user.firstName,
-                            lastName: user.lastName,
+                            id: 1,
+                            username: 'admin',
+                            firstName: 'Administrador',
+                            lastName: 'Supremo',
                             token: 'fake-jwt-token'
                         };
                         resolve({ ok: true, json: () => responseJson });
                     } else {
                         // else return error
-                        reject('Username or password is incorrect');
+                        reject('Usuario o contraseña incorrecta');
                     }
 
                     return;
                 }
 
-                // get users
-                if (url.endsWith('/users') && opts.method === 'GET') {
-                    // check for fake auth token in header and return users if valid, this security is implemented server side in a real application
-                    if (opts.headers && opts.headers.Authorization === 'Bearer fake-jwt-token') {
-                        resolve({ ok: true, json: () => users });
-                    } else {
-                        // return 401 not authorised if token is null or invalid
-                        reject('Unauthorised');
-                    }
+                if (url.endsWith('/users/add/service') && opts.method === 'POST') {
+                    // get parameters from post request
+                    let params = JSON.parse(opts.body);
 
-                    return;
-                }
+                    let addressOne = params.addressOne.replace(/ /g,'+');
+                    let addressTwo = params.addressTwo.replace(/ /g,'+');
+                    let url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins=' + addressOne +
+                        '&destinations=' + addressTwo + '&mode=car&language=es&key=AIzaSyBaIzYVIXY4sdU0AbVSAYnRX0slnlOnHI4';
 
-                // get user by id
-                if (url.match(/\/users\/\d+$/) && opts.method === 'GET') {
-                    // check for fake auth token in header and return user if valid, this security is implemented server side in a real application
-                    if (opts.headers && opts.headers.Authorization === 'Bearer fake-jwt-token') {
-                        // find user by id in users array
-                        let urlParts = url.split('/');
-                        let id = parseInt(urlParts[urlParts.length - 1]);
-                        let matchedUsers = users.filter(user => { return user.id === id; });
-                        let user = matchedUsers.length ? matchedUsers[0] : null;
+                    const requestOptions = {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    };
 
-                        // respond 200 OK with user
-                        resolve({ ok: true, json: () => user});
-                    } else {
-                        // return 401 not authorised if token is null or invalid
-                        reject('Unauthorised');
-                    }
-
-                    return;
-                }
-
-                // register user
-                if (url.endsWith('/users/register') && opts.method === 'POST') {
-                    // get new user object from post body
-                    let newUser = JSON.parse(opts.body);
-
-                    // validation
-                    let duplicateUser = users.filter(user => { return user.username === newUser.username; }).length;
-                    if (duplicateUser) {
-                        reject('Username "' + newUser.username + '" is already taken');
-                        return;
-                    }
-
-                    // save new user
-                    newUser.id = users.length ? Math.max(...users.map(user => user.id)) + 1 : 1;
-                    users.push(newUser);
-                    localStorage.setItem('users', JSON.stringify(users));
-
-                    // respond 200 OK
-                    resolve({ ok: true, json: () => ({}) });
-
-                    return;
-                }
-
-                // delete user
-                if (url.match(/\/users\/\d+$/) && opts.method === 'DELETE') {
-                    // check for fake auth token in header and return user if valid, this security is implemented server side in a real application
-                    if (opts.headers && opts.headers.Authorization === 'Bearer fake-jwt-token') {
-                        // find user by id in users array
-                        let urlParts = url.split('/');
-                        let id = parseInt(urlParts[urlParts.length - 1]);
-                        for (let i = 0; i < users.length; i++) {
-                            let user = users[i];
-                            if (user.id === id) {
-                                // delete user
-                                users.splice(i, 1);
-                                localStorage.setItem('users', JSON.stringify(users));
-                                break;
+                    return fetch(url, requestOptions)
+                        .then(response => {
+                            if (!response.ok) {
+                                reject(response.statusText);
                             }
-                        }
-
-                        // respond 200 OK
-                        resolve({ ok: true, json: () => ({}) });
-                    } else {
-                        // return 401 not authorised if token is null or invalid
-                        reject('Unauthorised');
-                    }
+                            resolve({ ok: true, json: () => response.json() });
+                        });
 
                     return;
                 }

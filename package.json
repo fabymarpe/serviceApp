@@ -10,6 +10,8 @@
     "start": "webpack-dev-server --open"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "load-google-maps-api": "^1.1.1",
     "history": "^4.6.3",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

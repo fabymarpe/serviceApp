@@ -1,5 +1,3 @@
-import { axios } from 'axios';
-    
 export function configureFakeBackend() {
     let realFetch = window.fetch;
     window.fetch = function (url, opts) {

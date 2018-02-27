@@ -38,7 +38,6 @@ class LoginPage extends React.Component {
     }
 
     render() {
-        const { loggingIn } = this.props;
         const { username, password, submitted } = this.state;
         return (
             <div className="col-md-6 col-md-offset-3">

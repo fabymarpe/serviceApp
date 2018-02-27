@@ -1,11 +1,10 @@
 import React from 'react';
 import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import { history } from '../_helpers';
 import { alertActions } from '../_actions';
 import { PrivateRoute } from '../_components';
-import { ServicePage } from '../ServicePage';
+import GoogleMap from "../_components/GoogleMap";
 import { LoginPage } from '../LoginPage';
 
 class App extends React.Component {
@@ -30,7 +29,7 @@ class App extends React.Component {
                         }
                         <Router history={history}>
                             <div>
-                                <PrivateRoute exact path="/" component={ServicePage} />
+                                <PrivateRoute exact path="/" component={GoogleMap} />
                                 <Route path="/login" component={LoginPage} />
                             </div>
                         </Router>

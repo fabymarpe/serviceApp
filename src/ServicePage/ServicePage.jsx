@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import { userActions } from '../_actions';
 
 class ServicePage extends React.Component {
@@ -30,9 +29,10 @@ class ServicePage extends React.Component {
         this.setState({submitted: true});
         const {descriptionService, addressOne, addressTwo} = this.state;
         const {dispatch} = this.props;
-        if (addressOne && addressTwo) {
+        if (descriptionService && addressOne && addressTwo) {
             dispatch(userActions.createService(addressOne, addressTwo));
         }
+        this.props.onFilter(e);
     }
 
     render() {

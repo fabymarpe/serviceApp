@@ -6,7 +6,7 @@ import { history } from '../_helpers';
 export const userActions = {
     login,
     createService,
-    logout,
+    logout
 };
 
 /**

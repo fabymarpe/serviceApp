@@ -18,5 +18,5 @@ password: admin123
 
 3. Type the require fields (description, source address, destination address)
 4. With the onBlur event of each address fields the app will connect with Google map api
-and will the duration and distance between the addresses and show on Map.
+and will get the duration and distance between the addresses and show them on Map.
 
